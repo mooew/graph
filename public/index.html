@@ -4,6 +4,7 @@
         <title>Whats Up ! Know what other's are up to in Realtime !</title>
         <link rel="stylesheet" href="https://unpkg.com/purecss@0.6.2/build/pure-min.css" integrity="sha384-UQiGfs9ICog+LwheBSRCt1o5cbyKIHbwjWscjemyBMT9YCUMZffs6UqUTd0hObXD" crossorigin="anonymous">
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:200">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.js"></script>
         <link rel="stylesheet" href="./style.css">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
@@ -13,13 +14,15 @@
 
           <div class="logo">
 <!--                <img src="./assets/pusher-logo.png" />        -->
-                  <h2>Bus communication</h2>
+                  <h2>
+                    <input id="dimV" type="text" placeholder="dim value" />
+                    <button id="send">Send</button>
+                  </h2>
             </div>
 
 
-            <div id="logout" class="logout">
-               <a href="/logout">Logout</a>
-            </div>
+
+
         </header>
         <section class="subheader">
 <!--              <img class="weather-icon" src="./assets/weather.png" />                 -->
@@ -41,9 +44,15 @@
             <div class="chartWrapper">
                 <div class="chartAreaWrapper">
                     <canvas id="weatherChart" height="300" width="1200"></canvas>
-                </div>
+
   <!--             <canvas id="myChartAxis" height="300" width="0"></canvas>  -->
-            </div>
+
+
+
+        </div>
+
+      </div>
+
 
         </section>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.bundle.min.js"></script>

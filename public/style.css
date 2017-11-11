@@ -7,14 +7,15 @@ body{
 
 header{
     background: #2b303b;
-    height: 50px;
+    height: 80px;
     width:100%;
     display: flex;
     color:#fff;
+color: black;
 }
 
 .logo img{
-  height: 45px;
+  height: 60px;
 }
 
 
@@ -86,9 +87,9 @@ header{
  }
 
  .chartWrapper > canvas {
-     position: absolute;
-     left: 0;
-     top: 0;
+   position: absolute;
+   left: 0;
+   top: 0;
      pointer-events:none;
  }
 

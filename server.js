@@ -1,10 +1,12 @@
 var express = require('express');
+var socket = require('socket.io');
 var path = require('path');
 var bodyParser = require('body-parser');
 var moment = require('moment');
-
 var Pusher = require('pusher');
 
+var logKNX = require('../utilities/test').log_event;
+var WriteToBus  = require('../knx_eibd').WriteToBus;
 var pusher = new Pusher({
     appId: '426105',
     key: '95be360cf53aab13f769',
@@ -13,6 +15,7 @@ var pusher = new Pusher({
    encrypted: true
 });
 
+//App setup
 var app = express();
 
 app.use(bodyParser.json());
@@ -56,6 +59,9 @@ app.get('/getTemperature', function(req,res){
   res.send(londonTempData);
 });
 
+//------------------------------------//
+//update graph throug http GET request//
+//------------------------------------//
 app.get('/addTemperature', function(req,res){
 
   var temp = parseInt(req.query.temperature);
@@ -82,6 +88,28 @@ app.get('/addTemperature', function(req,res){
     res.send({success:false, errorMessage: 'Invalid Query Paramaters, required - temperature & time.'});
   }
 });
+
+//---------------------------//
+//update graph through server//
+//---------------------------//
+
+logKNX.on('dim', function(data){
+  var temp = parseInt(data.value);
+//  var time = parseInt(req.query.time);
+
+  var newDataPoint = {
+    temperature: temp,
+//      time: time
+    time: moment().format(' h:mm:ss ')
+  };
+  londonTempData.dataPoints.push(newDataPoint);         //ad new datapoint to array
+  //trigger event event and send newDataPoint
+  pusher.trigger('london-temp-chart', 'new-temperature', {
+    dataPoint: newDataPoint
+  });
+});
+
+//----------------------------
 
 app.get('/addTemperature1', function(req,res){
 
@@ -111,6 +139,7 @@ app.get('/addTemperature1', function(req,res){
 });
 
 
+
 // Error Handler for 404 Pages
 app.use(function(req, res, next) {
     var error404 = new Error('Route Not Found');
@@ -120,6 +149,22 @@ app.use(function(req, res, next) {
 
 module.exports = app;
 
-app.listen(9000, function(){
+var server = app.listen(9000, function(){
   console.log('Example app listening on port 9000!')
+});
+
+// Socket setup & pass server
+var io = socket(server);
+io.on('connection', (socket) => {
+
+    console.log('made socket connection', socket.id);
+
+    // Handle chat event
+    socket.on('trigger', function(data){
+        var dim = parseInt(data.dim);
+        console.log(dim);
+        WriteToBus('0/0/6','DPT5',dim);
+
+    });
+
 });
