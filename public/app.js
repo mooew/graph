@@ -1,5 +1,21 @@
 // Using IIFE for Implementing Module Pattern to keep the Local Space for the JS Variables
 (function() {
+  var socket = io.connect('http://192.168.2.220:9000');
+
+
+  // Query DOM
+  var   dim = document.getElementById('dimV'),
+        btn = document.getElementById('send');
+
+        // Emit events
+        btn.addEventListener('click', function(){
+          socket.emit('trigger', {
+              dim: dim.value
+          });
+
+        });
+
+
     // Enable pusher logging - don't include this in production
     Pusher.logToConsole = true;
 
@@ -190,7 +206,7 @@
 
 
 /* TEMP CODE FOR TESTING */
-
+/*
   var dummyTime = 1500;
   setInterval(function(){
     dummyTime = dummyTime + 10;
